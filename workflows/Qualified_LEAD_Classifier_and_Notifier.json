@@ -1,0 +1,214 @@
+{
+  "name": "Qualified LEAD Classifier and Notifier",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "LEAD NAME"
+            },
+            {
+              "name": "Email"
+            },
+            {
+              "name": "Message"
+            },
+            {
+              "name": "Comapny Information"
+            },
+            {
+              "name": "Qualified",
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3cbc7465-b494-493a-8394-9c3a490f7a40",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=We have a new inbound lead and we need you to classify it into either SaaS or development agency category.\n\nHere is the lead information:\nName: {{ $json['LEAD NAME'] }}\nRequest: {{ $json.Message }}\nCompany Information: \n{{ $json['Comapny Information'] }}\nIf the lead a SaaS company, output 'SaaS'\nIf the lead is a development agency, output 'Agency'"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        220,
+        0
+      ],
+      "id": "9bb55859-362b-4e76-867c-acda498b78f2",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "U6iYmOjI3yENXW3V",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "54631b6a-40cc-462e-a6a6-92e101bfb640",
+              "leftValue": "={{ $json.message.content }}",
+              "rightValue": "Agency",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "d525e914-8113-4c26-80f1-dbd42f4f98c5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "pradeep.ku.parida2012@gmail.com",
+        "subject": "=New Agency Lead",
+        "message": "=New Agency Lead !!!\nName : {{ $('When Executed by Another Workflow').item.json['LEAD NAME'] }}\nComapny Info : \n{{ $('When Executed by Another Workflow').item.json['Comapny Information'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        -100
+      ],
+      "id": "bd5ce808-f2eb-4f7d-a6ff-25642f21938e",
+      "name": "New Agency Lead",
+      "webhookId": "7ebc4831-e519-400e-9cd6-b0a1f0a440ef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wp0zhGKbMBgZdz4o",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "pradeep.ku.parida2012@gmail.com",
+        "subject": "=New Agency Lead",
+        "message": "=New SaaS Lead !!!\nName : {{ $('When Executed by Another Workflow').item.json['LEAD NAME'] }}\nComapny Info : \n{{ $('When Executed by Another Workflow').item.json['Comapny Information'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        100
+      ],
+      "id": "7b852290-d4a1-4469-882a-cc8cef3d654a",
+      "name": "New SaaS Lead",
+      "webhookId": "7ebc4831-e519-400e-9cd6-b0a1f0a440ef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wp0zhGKbMBgZdz4o",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "LEAD NAME": "Pradeep Parida",
+          "Email": "pradeepparida919@gmail.com",
+          "Message": "build ai agent",
+          "Comapny Information": "Morningside.io is a company that appears to focus on providing innovative solutions, although specific details about their offerings are currently inaccessible due to a website access restriction (HTTP ERROR 403). This suggests that the company may be in a phase of development or maintenance, which could be relevant for a sales representative to consider when engaging with potential clients.",
+          "Qualified": true
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "New Agency Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "New SaaS Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0f8f3077-fa1f-4e82-aaed-60f0558645ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6dffe9d25070237256cd7ee1ba5a2f1d8709e5f8afe8b3ead8f5f97b806f9d22"
+  },
+  "id": "zpO97Y1FsElXmDGE",
+  "tags": []
+}
