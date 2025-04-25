@@ -2,7 +2,13 @@
 Automatically qualify, classify, and respond to leads using AI — no code required. This project uses **n8n**, ** No-Code AI Lead Qualification Agent (n8n + LLMs)Google Gemini/OpenAI**, **Relevance AI/Firecrawl**, and **Gmail** to create an intelligent lead handling workflow.
 
 ---
+### 🚀 Try the Lead Qualification Agent
 
+📝 [Click here to submit a lead form](https://pradeep2024.app.n8n.cloud/form/86dd93a1-5923-48c1-8810-00392ad099a2)
+
+[![Submit Lead Form](https://img.shields.io/badge/Submit%20Form-Click%20Here-brightgreen)]([https://your-form-link.com](https://pradeep2024.app.n8n.cloud/form/86dd93a1-5923-48c1-8810-00392ad099a2))
+
+---
 ## 📌 Features
 
 - 🔄 Form trigger → Research company info via Firecrawl/Relevance AI
@@ -61,12 +67,50 @@ Inbound leads fill out a form. Your agent:
 ![Workflow Diagram](./docs/architecture-diagram.png)
 
 ---
+### 🔄 Workflow 1: Lead Qualification
 
-## 📬 Want to Contribute?
+This workflow takes new lead data from a form and uses AI to qualify the lead.
 
-Fork this repo, create a branch, make your changes, and submit a pull request. Ideas welcome!
+![Lead Qualification Workflow](assets/workflow-lead-qualification.jpg)
 
 ---
+
+### 🧠 Workflow 2: Lead Classification & Notification
+
+If the lead is qualified, the AI classifies them and sends the result to the right email channel.
+
+![Lead Classification Workflow](assets/workflow-lead-classification.jpg)
+
+---
+### 📥 Example Input
+
+A visitor submits the following via the lead form:
+
+- **Name**: Jane Doe  
+- **Email**: jane@coolstartup.com  
+- **Company Website**: https://coolstartup.com  
+- **Message**: "We’re exploring ways to automate marketing analytics for our SaaS platform."
+
+---
+
+### ✅ AI Agent Response
+
+- Scraped company website using Firecrawl + Relevance AI.
+- Detected SaaS keywords and mid-size org info.
+- AI determines **Qualified Lead** ✅.
+
+---
+
+### ✉️ Outcome
+
+- Called Workflow 2
+- Lead was classified as **SaaS Lead**
+- Email sent to saas-leads@yourcompany.com with summary.
+
+
+
+
+
 
 ## 🪪 License
 
